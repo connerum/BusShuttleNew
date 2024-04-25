@@ -1,0 +1,131 @@
+@model IEnumerable<BusShuttleManager.Models.ViewEntry>
+@{
+    ViewData["Title"] = "Entry";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Entry Log</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<header>
+    <nav class="navbar is-white" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <button class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div id="navMenu" class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item" asp-controller="Home" asp-action="Drivers">Drivers</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Busses">Buses</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Stops">Stops</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Routes">Routes</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Loops">Loops</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Entries">Entries</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<section class="section">
+    <div class="container">
+        <h2 class="title">@ViewData["Title"] Log</h2>
+
+        <form method="get" action="@Url.Action("SearchEntries", "Home")" class="mb-3">
+            <div class="field is-horizontal">
+                <div class="field-label">
+                    <label class="label" for="datePicker">Select Date:</label>
+                </div>
+                <div class="field-body">
+                    <div class="field">
+                        <div class="control">
+                            <input type="date" id="datePicker" name="dateTime" class="input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field is-horizontal">
+                <div class="field-label">
+                    <label class="label" for="loopSelect">Select Loop:</label>
+                </div>
+                <div class="field-body">
+                    <div class="field">
+                        <div class="control">
+                            <div class="select">
+                                <select id="loopSelect" name="loopId">
+                                    <option value="">All</option>
+                                    @foreach (var loop in ViewBag.Loops)
+                                    {
+                                        <option value="@loop.Id">@loop.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field is-horizontal">
+                <div class="field-label"></div>
+                <div class="field-body">
+                    <div class="field">
+                        <div class="control">
+                            <button type="submit" class="button is-primary">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="table-container">
+            <table class="table is-fullwidth is-striped is-hoverable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Bus</th>
+                        <th>Driver</th>
+                        <th>Loop</th>
+                        <th>Stop</th>
+                        <th>Boarded</th>
+                        <th>Left Behind</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in Model)
+                    {
+                        <tr>
+                            <td>@entry.TimeStamp.ToString("MM/dd/yyyy")</td>
+                            <td>@entry.TimeStamp.ToString("HH:MM:ss")</td>
+                            <td>@entry.BusName</td>
+                            <td>@entry.DriverName</td>
+                            <td>@entry.LoopName</td>
+                            <td>@entry.StopName</td>
+                            <td>@entry.Boarded</td>
+                            <td>@entry.LeftBehind</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <form method="get">
+            <input type="hidden" name="dateTime" value="@ViewBag.DateTime" />
+            <input type="hidden" name="loopId" value="@ViewBag.LoopId" />
+            <button type="submit" class="button is-info">Export to CSV</button>
+        </form>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+@model BusShuttleManager.Models.RoutesViewModel
+@{
+    ViewData["Title"] = "Routes";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Routes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<section class="section">
+    <div class="container">
+        <h2 class="title">Routes</h2>
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+            <div id="navbarBasicExample" class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item" asp-controller="Home" asp-action="Drivers">Drivers</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Busses">Buses</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Stops">Stops</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Routes">Routes</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Loops">Loops</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Entries">Entries</a>
+                </div>
+            </div>
+        </nav>
+
+        @using (Html.BeginForm("Routes", "Home", FormMethod.Post))
+        {
+            <div class="field">
+                <div class="select">
+                    @Html.DropDownList("selectedLoopId", new SelectList(Model.Loops, "Id", "Name"), "Select Loop", new { onchange = "this.form.submit();" })
+                </div>
+            </div>
+        }
+
+        @if (Model.Stops != null && Model.Stops.Any())
+        {
+            @using (Html.BeginForm("AddRoute", "Home", FormMethod.Post))
+            {
+                <div class="field is-grouped">
+                    <div class="control is-expanded">
+                        @Html.DropDownList("selectStopId", new SelectList(Model.Stops, "Id", "Name"), "Select Stop", new { @class = "select" })
+                    </div>
+                    <div class="control">
+                        <button type="submit" class="button is-primary">Assign</button>
+                    </div>
+                    <input type="hidden" name="selectedLoopId" value="@Model.SelectedLoop.Id" />
+                </div>
+            }
+        }
+
+        <table class="table is-fullwidth is-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Stop</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Routes.OrderBy(route => route.Order))
+                {
+                    <tr>
+                        <td>
+                            @using (Html.BeginForm("MoveRouteUp", "Home", FormMethod.Post))
+                            {
+                                <input type="hidden" name="routeId" value="@item.Id"/>
+                                <input type="hidden" name="selectedLoopId" value="@Model.SelectedLoop.Id" />
+                                <button class="button is-small is-success">Move Up</button>
+                            }
+                            @using (Html.BeginForm("MoveRouteDown", "Home", FormMethod.Post))
+                            {
+                                <input type="hidden" name="routeId" value="@item.Id"/>
+                                <input type="hidden" name="selectedLoopId" value="@Model.SelectedLoop.Id" />
+                                <button class="button is-small is-warning">Move Down</button>
+                            }
+                        </td>
+                        <td>
+                            @if (Model.Stops != null)
+                            {
+                                var stop = Model.Stops.FirstOrDefault(s => s.Id == item.StopId);
+                                if (stop != null)
+                                {
+                                    @stop.Name
+                                }
+                            }
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="button is-small is-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

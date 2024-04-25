@@ -1,0 +1,80 @@
+@model BusShuttleManager.Models.CreateDriver
+@{
+    ViewData["Title"] = "Create Driver";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Create Driver</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h2 class="title">Add new Driver</h2>
+            <a asp-action="Drivers" class="button is-link">Back to List</a>
+            <div class="columns">
+                <div class="column is-one-third">
+                    <form asp-action="CreateDriver">
+                        <div asp-validation-summary="ModelOnly" class="notification is-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="field">
+                            <label asp-for="FirstName" class="label">First Name</label>
+                            <div class="control">
+                                <input asp-for="FirstName" class="input" />
+                                <span asp-validation-for="FirstName" class="help is-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="field">
+                            <label asp-for="LastName" class="label">Last Name</label>
+                            <div class="control">
+                                <input asp-for="LastName" class="input" />
+                                <span asp-validation-for="LastName" class="help is-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="field">
+                            <label asp-for="Email" class="label">Email</label>
+                            <div class="control">
+                                <input asp-for="Email" class="input" />
+                                <span asp-validation-for="Email" class="help is-danger"></span>
+                                <span id="noEmailFound" class="help is-danger" style="display: none;">No email found</span>
+                            </div>
+                        </div>
+                        
+                        <div class="field">
+                            <div class="control">
+                                <input type="submit" value="Create" class="button is-primary" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+        <script>
+            var emailInput = document.getElementById("Email");
+            var noEmailFoundMessage = document.getElementById("noEmailFound");
+
+            emailInput.addEventListener("input", function () {
+                if (emailInput.value.trim() === "") {
+                    noEmailFoundMessage.style.display = "block";
+                } else {
+                    noEmailFoundMessage.style.display = "none";
+                }
+            });
+        </script>
+    }
+</body>
+</html>

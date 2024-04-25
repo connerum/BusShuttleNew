@@ -1,0 +1,51 @@
+@model BusShuttleManager.Models.CreateBus
+@{
+    ViewData["Title"] = "Create Bus";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Create Bus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<section class="section">
+    <div class="container">
+        <h2 class="title">Add new bus</h2>
+        <a asp-action="Busses" class="button is-link">Back to List</a>
+        <div class="columns">
+            <div class="column is-one-third">
+                <form asp-action="CreateBus">
+                    <div asp-validation-summary="ModelOnly" class="notification is-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="field">
+                        <label asp-for="BusName" class="label">Bus Name</label>
+                        <div class="control">
+                            <input asp-for="BusName" class="input" />
+                            <span asp-validation-for="BusName" class="help is-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="control">
+                            <input type="submit" value="Create" class="button is-primary" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+</body>
+</html>

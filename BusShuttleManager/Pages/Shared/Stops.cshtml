@@ -1,0 +1,78 @@
+@model IEnumerable<BusShuttleManager.Models.StopViewModel>
+@{
+    ViewData["Title"] = "Stops";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Stops</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<header>
+    <nav class="navbar is-white" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <button class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenuStops">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div id="navMenuStops" class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item" asp-controller="Home" asp-action="Drivers">Drivers</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Busses">Buses</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Stops">Stops</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Routes">Routes</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Loops">Loops</a>
+                    <a class="navbar-item" asp-controller="Home" asp-action="Entries">Entries</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<section class="section">
+    <div class="container">
+        <h2 class="title">@ViewData["Title"] List</h2>
+        <a asp-action="CreateStop" class="button is-primary">Add Stop</a>
+
+        <table class="table is-fullwidth is-striped is-hoverable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            <a asp-action="UpdateStop" asp-route-id="@item.Id" class="button is-small is-info">Edit</a> 
+                            <form method="post" action='@Url.Action("DeleteStop", "Home")' style="display:inline-block;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="button is-small is-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

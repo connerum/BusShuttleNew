@@ -1,0 +1,53 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<section class="section">
+    <div class="container">
+        <h1 class="title">@ViewData["Title"]</h1>
+        <div class="columns is-centered">
+            <div class="column is-half">
+                <form id="account" method="post">
+                    <h2>Manager & Driver Login</h2>
+                    <hr />
+                    <div asp-validation-summary="ModelOnly" class="notification is-danger" role="alert"></div>
+                    <div class="field">
+                        <label class="label" asp-for="Input.Email">Email</label>
+                        <div class="control">
+                            <input asp-for="Input.Email" class="input" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        </div>
+                        <p class="help is-danger" asp-validation-for="Input.Email"></p>
+                    </div>
+                    <div class="field">
+                        <label class="label" asp-for="Input.Password">Password</label>
+                        <div class="control">
+                            <input asp-for="Input.Password" class="input" autocomplete="current-password" aria-required="true" placeholder="password" />
+                        </div>
+                        <p class="help is-danger" asp-validation-for="Input.Password"></p>
+                    </div>
+                    <div class="field">
+                        <button id="login-submit" type="submit" class="button is-primary is-fullwidth">Log in</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+</body>
+</html>

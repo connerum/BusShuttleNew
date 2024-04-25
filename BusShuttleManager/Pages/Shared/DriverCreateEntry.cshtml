@@ -1,0 +1,102 @@
+@model BusShuttleManager.Models.CreateEntry
+
+<section class="section">
+    <div class="container">
+        <h2 class="title">Create Entry</h2>
+        <form asp-action="CreateEntry">
+            <div class="field">
+                <input type="hidden" asp-for="LoopId" />
+                <input type="hidden" asp-for="BusId" />
+                <input type="hidden" asp-for="DriverId" />
+                <label asp-for="SelectedStopId" class="label">Select Stop</label>
+                <div class="control">
+                    <div class="select">
+                        <select asp-for="SelectedStopId" class="input" id="SelectedStopId">
+                            @foreach (var route in Model.Routes)
+                            {
+                                if (Model.Stops != null)
+                                {
+                                    var stop = Model.Stops.FirstOrDefault(s => s.Id == route.StopId);
+                                    if (stop != null)
+                                    {
+                                        <option value="@stop.Id">@stop.Name</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Passengers Boarded</label>
+                <div class="buttons has-addons">
+                    <button type="button" class="button is-primary" onclick="decrementBoarded()">-</button>
+                    <span id="boardedCounter" class="button is-static">@Model.Boarded</span>
+                    <button type="button" class="button is-primary" onclick="incrementBoarded()">+</button>
+                </div>
+                <input type="hidden" asp-for="Boarded" id="Boarded" />
+            </div>
+
+            <div class="field">
+                <label class="label">Passengers Left Behind</label>
+                <div class="buttons has-addons">
+                    <button type="button" class="button is-primary" onclick="decrementLeftBehind()">-</button>
+                    <span id="leftBehindCounter" class="button is-static">@Model.LeftBehind</span>
+                    <button type="button" class="button is-primary" onclick="incrementLeftBehind()">+</button>
+                </div>
+                <input type="hidden" asp-for="LeftBehind" id="LeftBehind" />
+            </div>
+
+            <div class="field">
+                <button type="submit" class="button is-primary">Submit Entry</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function incrementBoarded() {
+            var counter = parseInt(document.getElementById('boardedCounter').innerText);
+            document.getElementById('boardedCounter').innerText = counter + 1;
+            document.getElementById('Boarded').value = counter + 1;
+        }
+
+        function decrementBoarded() {
+            var counter = parseInt(document.getElementById('boardedCounter').innerText);
+            if (counter > 0) {
+                document.getElementById('boardedCounter').innerText = counter - 1;
+                document.getElementById('Boarded').value = counter - 1;
+            }
+        }
+
+        function incrementLeftBehind() {
+            var counter = parseInt(document.getElementById('leftBehindCounter').innerText);
+            document.getElementById('leftBehindCounter').innerText = counter + 1;
+            document.getElementById('LeftBehind').value = counter + 1;
+        }
+
+        function decrementLeftBehind() {
+            var counter = parseInt(document.getElementById('leftBehindCounter').innerText);
+            if (counter > 0) {
+                document.getElementById('leftBehindCounter').innerText = counter - 1;
+                document.getElementById('LeftBehind').value = counter - 1;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var selectedStopId = '@Model.SelectedStopId'; // Use single quotes to prevent issues with special characters
+            console.log("selectedStopId: ", selectedStopId);
+            var select = document.getElementById("SelectedStopId");
+
+            // If selectedStopId is not empty, find and select the corresponding option
+            if (selectedStopId) {
+                select.value = selectedStopId;
+            } else {
+                // If selectedStopId is empty, select the first option by default
+                select.selectedIndex = 1;
+            }
+        });
+    </script>
+}

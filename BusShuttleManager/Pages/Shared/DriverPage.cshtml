@@ -1,0 +1,72 @@
+@model BusShuttleManager.Models.ViewDriverPage
+@{
+    ViewData["Title"] = "Driver Page";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Driver Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<section class="section">
+    <div class="container">
+        <h2 class="title">Driver Page</h2>
+        <div class="columns">
+            <div class="column is-one-third">
+                <form asp-action="DriverCreateEntry">
+                    <div class="field">
+                        <label class="label" for="loopId">What loop will you be on?</label>
+                        <div class="control">
+                            <div class="select">
+                                <select id="loopId" name="loopId">
+                                    @foreach (var loop in Model.Loops)
+                                    {
+                                        <option value="@loop.Id">@loop.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="busId">What is your bus number?</label>
+                        <div class="control">
+                            <div class="select">
+                                <select id="busId" name="busId">
+                                    @foreach (var bus in Model.Busses)
+                                    {
+                                        <option value="@bus.Id">@bus.BusName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="driverId">What is your name?</label>
+                        <div class="control">
+                            <div class="select">
+                                <select id="driverId" name="driverId">
+                                    @foreach (var driver in Model.Drivers)
+                                    {
+                                        <option value="@driver.Id">@driver.FirstName @driver.LastName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <button type="submit" class="button is-primary">Start</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

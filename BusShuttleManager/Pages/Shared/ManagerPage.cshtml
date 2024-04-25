@@ -1,0 +1,51 @@
+@{
+    ViewData["Title"] = "Manager Dashboard";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Bus Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BusShuttleManager.styles.css" asp-append-version="true" />
+</head>
+<body>
+<section class="section">
+        <div class="container">
+            <h2 class="title">@ViewData["Title"]</h2>
+            <main>
+                 <nav class="navbar is-white" role="navigation" aria-label="main navigation">
+                        <div class="container">
+                            <div class="navbar-brand">
+                                <button class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+                                    <span aria-hidden="true"></span>
+                                    <span aria-hidden="true"></span>
+                                    <span aria-hidden="true"></span>
+                                </button>
+                            </div>
+                            <div id="navMenu" class="navbar-menu">
+                                <div class="navbar-start">
+                                    <a class="navbar-item" asp-controller="Home" asp-action="Drivers">Drivers</a>
+                                    <a class="navbar-item" asp-controller="Home" asp-action="Busses">Buses</a>
+                                    <a class="navbar-item" asp-controller="Home" asp-action="Stops">Stops</a>
+                                    <a class="navbar-item" asp-controller="Home" asp-action="Routes">Routes</a>
+                                    <a class="navbar-item" asp-controller="Home" asp-action="Loops">Loops</a>
+                                    <a class="navbar-item" asp-controller="Home" asp-action="Entries">Entries</a>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+            </main>
+        </div>
+    </section>
+<header>
+   
+</header>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+﻿@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Log out";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+<section class="section">
+    <div class="container">
+        <header>
+            <h1 class="title">@ViewData["Title"]</h1>
+            @{
+                if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                        <button type="submit" class="button is-primary">Click here to Logout</button>
+                    </form>
+                }
+                else
+                {
+                    <p>You have successfully logged out of the application.</p>
+                }
+            }
+        </header>
+    </div>
+</section>
+</body>
+</html>
