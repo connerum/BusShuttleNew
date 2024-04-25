@@ -31,27 +31,27 @@ public class HomeController : Controller
 
 
 
-    public HomeController(ILogger<HomeController> logger, IDriverService dService, IBusService bService, 
-        IRouteService rService, IStopService sService, IEntryService eService, ILoopService lService, UserManager<IdentityUser> userManager)
+    public HomeController(ILogger<HomeController> logger, IDriverService driverService, IBusService busService, 
+        IRouteService routeService, IStopService stopService, IEntryService entryService, ILoopService loopService, UserManager<IdentityUser> userManager)
     {
         _logger = logger;
         _userManager = userManager;
-        this.driverService = dService;
-        this.busService = bService;
-        this.routeService = rService;
-        this.stopService = sService;
-        this.entryService = eService;
-        this.loopService = lService;
+        this.driverService = driverService;
+        this.busService = busService;
+        this.routeService = routeService;
+        this.stopService = stopService;
+        this.entryService = entryService;
+        this.loopService = loopService;
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult ManagerPage()
     {
         return View();
     }
 
-    [Authorize(Policy = "ActivatedDriver")]
+    [Authorize(Policy = "DriverAccess")]
     public IActionResult DriverPage()
     {
         var loops = loopService.getActiveLoops(); 
@@ -64,7 +64,7 @@ public class HomeController : Controller
 
     /*DRIVERS*/
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult Drivers()
     {
         var userClaims = User.Claims.ToList();
@@ -83,7 +83,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult UpdateDriver([FromRoute] int id)
     {
         var driverEditModel = new EditDriver();  
@@ -94,7 +94,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult UpdateDriver(int id, [Bind("FirstName,LastName")] EditDriver driver)
@@ -104,7 +104,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult CreateDriver()
     {
         var driverCreateModel = Models.CreateDriver.NewDriver(driverService.GetAmountOfDrivers());
@@ -112,7 +112,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateDriver(int id, [Bind("FirstName,LastName,Email")] CreateDriver driver)
@@ -141,7 +141,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteDriver(int id)
@@ -158,7 +158,7 @@ public class HomeController : Controller
   
 
     /*BUSSES*/
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult Busses()
     {
         var activeBusses = busService.getActiveBusses(); 
@@ -172,7 +172,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult UpdateBus([FromRoute] int id)
     {
         var busEditModel =  new EditBus();
@@ -183,7 +183,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult UpdateBus(int id, [Bind("BusName")] EditBus bus)
@@ -193,7 +193,7 @@ public class HomeController : Controller
     }
     
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult CreateBus()
     {
         var busCreateModel = Models.CreateBus.NewBus(busService.GetAmountOfBusses());
@@ -201,7 +201,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult CreateBus(int id, [Bind("BusName")] CreateBus bus)
@@ -211,7 +211,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteBus(int id)
@@ -227,10 +227,10 @@ public class HomeController : Controller
 
 
     /*ROUTES*/
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult Routes()
     {
-        var viewModel = new RoutesViewModel
+        var viewModel = new ViewRoutes
         {
             Loops = loopService.getAllLoops(),
             Routes = new List<Routes>()
@@ -239,7 +239,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     public IActionResult Routes(int selectedLoopId)
     {
@@ -247,12 +247,12 @@ public class HomeController : Controller
         var stops = stopService.getActiveStops();
         var selectedLoop = loopService.getLoopById(selectedLoopId); 
         var routes = routeService.getRoutesByLoopId(selectedLoopId); 
-        var viewModel = RoutesViewModel.FromLoopID(routes, loops, selectedLoop, stops);
+        var viewModel = Models.ViewRoutes.FromLoopID(routes, loops, selectedLoop, stops);
         return View(viewModel);
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     public IActionResult AddRoute(int selectedLoopId, int selectStopId)
     {
@@ -263,12 +263,12 @@ public class HomeController : Controller
         var newOrder = routes.Count + 1;
         routeService.CreateNewRoute(newOrder, selectedLoopId, selectStopId);
         routes = routeService.getRoutesByLoopId(selectedLoopId); 
-        var viewModel = RoutesViewModel.FromLoopID(routes, loops, selectedLoop, stops);
+        var viewModel = Models.ViewRoutes.FromLoopID(routes, loops, selectedLoop, stops);
         return View(viewModel);
     }
 
     
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     public IActionResult MoveRouteUp(int selectedLoopId, int routeId)
     {
@@ -277,12 +277,12 @@ public class HomeController : Controller
         var selectedLoop = loopService.getLoopById(selectedLoopId); 
         var routes = routeService.getRoutesByLoopId(selectedLoopId); 
         routeService.IncreaseRouteOrder(routeId);
-        var viewModel = RoutesViewModel.FromLoopID(routes, loops, selectedLoop, stops);
+        var viewModel = Models.ViewRoutes.FromLoopID(routes, loops, selectedLoop, stops);
         return View(viewModel);
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     public IActionResult MoveRouteDown(int selectedLoopId, int routeId)
     {
@@ -292,28 +292,28 @@ public class HomeController : Controller
         var routes = routeService.getRoutesByLoopId(selectedLoopId); 
         routeService.DecreaseRouteOrder(routeId);
         _logger.LogInformation("routeId: " + routeId);
-        var viewModel = RoutesViewModel.FromLoopID(routes, loops, selectedLoop, stops);
+        var viewModel = Models.ViewRoutes.FromLoopID(routes, loops, selectedLoop, stops);
         return View(viewModel);
     }
 
 
     /*STOPS*/
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult Stops()
     {
         var activeStops = stopService.getActiveStops(); 
-        var stopViewModels = activeStops.Select(stop => new StopViewModel
+        var stopView = activeStops.Select(stop => new ViewStop
         {
             Id = stop.Id,
             Name = stop.Name
 
         }).ToList();
         
-        return View(stopViewModels);
+        return View(stopView);
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult UpdateStop([FromRoute] int id)
     {
         var stopEditModel =  new EditStop();
@@ -324,7 +324,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult UpdateStop(int id, [Bind("Name")] EditStop stop)
@@ -334,7 +334,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult CreateStop()
     {
         var stopCreateModel = Models.CreateStop.NewStop(stopService.GetAmountOfStops());
@@ -342,7 +342,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult CreateStop(int id, [Bind("Name,Latitude,Longitude")] CreateStop stop)
@@ -351,7 +351,7 @@ public class HomeController : Controller
         return RedirectToAction("Stops");
     }
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteStop(int id)
@@ -368,7 +368,7 @@ public class HomeController : Controller
 
     /*LOOPS*/
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult Loops()
     {
         var activeLoops = loopService.getActiveLoops();
@@ -382,7 +382,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult UpdateLoop([FromRoute] int id)
     {
         var loopEditModel =  new EditLoop();
@@ -393,7 +393,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult UpdateLoop(int id, [Bind("Name")] EditLoop loop)
@@ -403,7 +403,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     public IActionResult CreateLoop()
     {
         var loopCreateModel = Models.CreateLoop.NewLoop(loopService.GetAmountOfLoops());
@@ -411,7 +411,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult CreateLoop(int id, [Bind("Name")] CreateLoop loop)
@@ -420,7 +420,7 @@ public class HomeController : Controller
         return RedirectToAction("Loops");
     }
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteLoop(int id)
@@ -436,7 +436,7 @@ public class HomeController : Controller
 
 
     /*ENTRIES*/
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpGet]
     public IActionResult Entries()
     {
@@ -455,7 +455,7 @@ public class HomeController : Controller
         return View(viewModels);
     }
 
-    [Authorize(Policy = "ManagerOnly")]
+    [Authorize(Policy = "ManagerAccess")]
     [HttpGet]
     public IActionResult SearchEntries([FromQuery]DateTime dateTime, int? loopId = null)
     {
@@ -493,7 +493,7 @@ public class HomeController : Controller
         return View("Entries", viewModels);
     }
 
-        [Authorize(Policy = "ActivatedDriver")]
+        [Authorize(Policy = "")]
     public IActionResult DriverCreateEntry(int loopId, int busId, int driverId)
     {
         var routes = routeService.getRoutesByLoopId(loopId);
@@ -518,7 +518,7 @@ public class HomeController : Controller
     }
 
 
-    [Authorize(Policy = "ActivatedDriver")]
+    [Authorize(Policy = "DriverAccess")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult CreateEntry([Bind("Boarded,LeftBehind,BusId,DriverId,LoopId,SelectedStopId")] CreateEntry entryModel)

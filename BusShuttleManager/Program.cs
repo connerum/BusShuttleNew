@@ -6,23 +6,24 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<AppDbContext>();
 
+
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("ManagerOnly", policy =>
+    options.AddPolicy("ManagerAccess", policy =>
     {
         policy.RequireRole("Manager");
     });
 
-    options.AddPolicy("ActivatedDriver", policy =>
+    options.AddPolicy("DriverAccess", policy =>
     {
         policy.RequireAuthenticatedUser(); 
         policy.RequireRole("Driver");
@@ -31,17 +32,15 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<IBusService, BusService>();
-builder.Services.AddScoped<IStopService, StopService>();
+builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<ILoopService, LoopService>();
 builder.Services.AddScoped<IRouteService, RouteService>();
+builder.Services.AddScoped<IStopService, StopService>();
 builder.Services.AddScoped<IEntryService, EntryService>();
-
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -49,7 +48,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -57,9 +55,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>{
@@ -70,5 +66,4 @@ app.UseEndpoints(endpoints =>{
 });
 
 app.MapRazorPages();
-
 app.Run();
